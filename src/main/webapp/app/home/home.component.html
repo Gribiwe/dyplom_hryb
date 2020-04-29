@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-12 text-center">
+        <h1 class="display-4">Добро пожаловать в G-Paper!</h1>
+
+        <h2 class="lead">Облачное хранилище документов</h2>
+        <br>
+        <div [ngSwitch]="isAuthenticated()">
+            <div *ngSwitchCase="true">
+                <h3 id="home-logged-message" *ngIf="account">Вы {{ account.firstName + " " +account.lastName }}.</h3>
+                <img *ngIf="account" src="{{imageUrl}}" style="    width: 200px;
+    height: 200px;
+    border-radius: 50%;">
+            </div>
+
+            <div *ngSwitchCase="false">
+                <button class="btn btn-outline-info" (click)="login()">Вход</button>
+            </div>
+            <br>
+
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <br/>
+
+            </div>
+            <div class="row text-center">
+                <div class="col">
+                    <div class="counter">
+                        <fa-icon style="font-size: 40px" icon="file"></fa-icon>
+                        <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{documentNumber}}</h2>
+                        <p class="count-text ">Документов загружено</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="counter">
+                        <fa-icon style="font-size: 40px" icon="users"></fa-icon>
+                        <h2 class="timer count-title count-number" data-to="1700" data-speed="1500">{{employeeNumber}}</h2>
+                        <p class="count-text ">Сотрудников</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="counter">
+                        <fa-icon style="font-size: 40px" icon="building"></fa-icon>
+                        <h2 class="timer count-title count-number" data-to="11900" data-speed="1500">{{departmentNumber}}</h2>
+                        <p class="count-text ">Филиалов</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="counter">
+                        <fa-icon style="font-size: 40px" icon="city"></fa-icon>
+                        <h2 class="timer count-title count-number" data-to="157" data-speed="1500">{{companyNumber}}</h2>
+                        <p class="count-text ">Компаний</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

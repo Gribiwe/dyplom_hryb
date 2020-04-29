@@ -1,0 +1,64 @@
+entity Document {
+	documentName String,
+    startDate Instant,
+	endDate Instant
+}
+
+entity Department {
+	departmentName String required
+    streetAddress String,
+	postalCode String,
+	city String,
+	stateProvince String
+}
+
+entity Company {
+	comapnyName String required
+}
+
+/**
+ * The Employee entity.
+ */
+entity Employee {
+	/**
+	* The firstname attribute.
+	*/
+	firstName String,
+	lastName String,
+	email String,
+	phoneNumber String,
+	hireDate Instant,
+	salary Long
+}
+
+relationship OneToOne {
+	Company{baseDepartment} to Department
+}
+
+relationship ManyToOne {
+	Document{firstDepartment} to Department,
+	Document{secondDepartment} to Department
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+    Company{departments} to Department{company},
+	Department{employee} to	Employee{department}
+}
+
+relationship ManyToOne {
+	Employee{manager} to Employee
+}
+
+// Set pagination options
+paginate Company, Department, Employee with infinite-scroll
+paginate Document with pagination
+
+// Use Data Transfert Objects (DTO)
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+
+// Set an angular suffix
+// angularSuffix * with mySuffix

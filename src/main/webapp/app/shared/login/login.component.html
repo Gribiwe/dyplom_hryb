@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h4 class="modal-title">Вход</h4>
+
+    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')">
+        <span aria-hidden="true">x</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-danger" *ngIf="authenticationError">
+                <strong>Ошибка!</strong> Проверьте данные и попробуйте еще раз.
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <form class="form" role="form" (ngSubmit)="login()" [formGroup]="loginForm">
+                <div class="form-group">
+                    <label class="username-label" for="username">Логин</label>
+                    <input type="text" class="form-control" name="username" id="username" placeholder="Ваш логин"
+                           formControlName="username" #username>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Ваш пароль"
+                           formControlName="password">
+                </div>
+
+                <div class="form-check">
+                    <label class="form-check-label" for="rememberMe">
+                        <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" formControlName="rememberMe">
+                        <span>Запомнить</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary my-3">Вход</button>
+            </form>
+        </div>
+    </div>
+</div>

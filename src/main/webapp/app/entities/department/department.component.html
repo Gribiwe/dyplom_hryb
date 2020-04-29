@@ -1,0 +1,75 @@
+<div>
+    <h2 id="page-heading">
+        <span>Филиалы</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-department" [routerLink]="['/department/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span>
+            Создать новый филиал
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="departments?.length === 0">
+        <span>Не найдено филиалов</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="departments?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="reset.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="departmentName"><span>Название филиала</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="streetAddress"><span>Адрес</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="postalCode"><span>Почтовый индекс</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="city"><span>Город</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="stateProvince"><span>Область</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="companyId"><span>Компания</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+                <tr *ngFor="let department of departments ;trackBy: trackId">
+                    <td><a [routerLink]="['/department', department.id, 'view']">{{ department.id }}</a></td>
+                    <td>{{ department.departmentName }}</td>
+                    <td>{{ department.streetAddress }}</td>
+                    <td>{{ department.postalCode }}</td>
+                    <td>{{ department.city }}</td>
+                    <td>{{ department.stateProvince }}</td>
+                    <td>
+                        <div *ngIf="department.companyId">
+                            <a [routerLink]="['/company', department.companyId , 'view']" >{{ department.companyId }}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/department', department.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline">Просмотр</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/department', department.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline">Редактировать</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(department)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline">Удалить</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

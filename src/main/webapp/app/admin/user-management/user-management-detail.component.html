@@ -1,0 +1,70 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="user">
+            <h2>
+                <span>Пользователь</span> <b>{{ user.userDTO.login }}</b>
+            </h2>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span>Логин</span></dt>
+                <dd>
+                    <span>{{ user.userDTO.login }}</span>
+                    <jhi-boolean
+                        [value]="user.userDTO.activated"
+                        textTrue="Активирован"
+                        textFalse="Дезактивирован">
+                    </jhi-boolean>
+                </dd>
+
+                <dt><span>Имя</span></dt>
+                <dd>{{ user.userDTO.firstName }}</dd>
+
+                <dt><span>Фамилия</span></dt>
+                <dd>{{ user.userDTO.lastName }}</dd>
+
+                <dt><span>Почта</span></dt>
+                <dd>{{ user.userDTO.email }}</dd>
+
+                <dt><span>Кем создан</span></dt>
+                <dd>{{ user.userDTO.createdBy }}</dd>
+
+                <dt><span>Дата создания</span></dt>
+                <dd>{{ user.userDTO.createdDate | date:'dd/MM/yy HH:mm' }}</dd>
+
+                <dt><span>Кем отредактирован</span></dt>
+                <dd>{{ user.userDTO.lastModifiedBy }}</dd>
+
+                <dt><span>Дата найма</span></dt>
+                <dd>{{ user.employeeDTO.hireDate }}</dd>
+
+                <dt><span>Номер телефона</span></dt>
+                <dd>{{ user.employeeDTO.phoneNumber }}</dd>
+
+                <dt><span>Менеджер</span></dt>
+                <dd>{{ user.employeeDTO.managerId }}</dd>
+
+                <dt><span>Зарплата</span></dt>
+                <dd>{{ user.employeeDTO.salary }}</dd>
+
+                <dt><span>Филиал</span></dt>
+                <dd>{{ user.employeeDTO.departmentId }}</dd>
+
+                <dt><span>Дата редактирования</span></dt>
+                <dd>{{ user.userDTO.lastModifiedDate | date:'dd/MM/yy HH:mm' }}</dd>
+
+                <dt><span>Допуск</span></dt>
+                <dd>
+                    <ul class="list-unstyled">
+                        <li *ngFor="let authority of user.userDTO.authorities">
+                            <span class="badge badge-info">{{ getAuthorityTest(authority) }}</span>
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+
+            <button type="submit" routerLink="../../" class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Назад</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+<div>
+    <h2 id="page-heading">
+        <span>Документы</span>
+
+        <button *jhiHasAnyAuthority="'ROLE_CANUPLOAD'" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-document" [routerLink]="['/document/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span>
+            Сохранить новый документ
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="documents?.length === 0">
+        <span>Не найдено документов</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="documents?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+                    <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col" jhiSortBy="documentName"><span>Название</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col" jhiSortBy="startDate"><span>Дата сохранения</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col" jhiSortBy="author"><span>Автор</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let document of documents ;trackBy: trackId">
+                    <td><a [routerLink]="['/document', document.id, 'view']">{{ document.id }}</a></td>
+                    <td>{{ document.documentName }}</td>
+                    <td>{{ document.startDate | date:'medium' }}</td>
+                    <td>
+                        <div *ngIf="document.author">
+                            <a [routerLink]="['/employee', document.author , 'view']" >{{ document.author }}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <a *jhiHasAnyAuthority="'ROLE_CANDOWNLOAD'" href="api/documents/download/{{document.fileName}}" download
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="download"></fa-icon>
+                                <span class="d-none d-md-inline">Скачать</span>
+                            </a>
+                            <button type="submit"
+                                    [routerLink]="['/document', document.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline">Редактировать</span>
+                            </button>
+                            <button type="submit" (click)="delete(document)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline">Удалить</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="documents?.length > 0">
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)">
+                <ng-template ngbPaginationFirst>《</ng-template>
+                <ng-template ngbPaginationLast>》</ng-template>
+                <ng-template ngbPaginationPrevious>〈</ng-template>
+                <ng-template ngbPaginationNext>〉</ng-template>
+                <ng-template ngbPaginationEllipsis>...</ng-template>
+                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

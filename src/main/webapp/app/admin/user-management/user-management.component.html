@@ -1,0 +1,86 @@
+<div>
+    <h2>
+        <span id="user-management-page-heading">Пользователи</span>
+
+        <button class="btn btn-primary float-right jh-create-entity" [routerLink]="['./new']">
+            <fa-icon icon="plus"></fa-icon> <span>Создать пользователя</span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="table-responsive" *ngIf="users">
+        <table class="table table-striped" aria-describedby="user-management-page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="login"><span>Логин</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="email"><span>Имя</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="email"><span>Фамилия</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col">Статус</th>
+                    <th scope="col"><span>Допуск</span></th>
+                    <th scope="col" jhiSortBy="lastModifiedBy"><span>Кем редактирован</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody *ngIf="users">
+                <tr *ngFor="let user of users; trackBy: trackIdentity">
+                    <td><a [routerLink]="['./', user.userDTO.login, 'view']">{{ user.userDTO.id }}</a></td>
+                    <td>{{ user.userDTO.login }}</td>
+                    <td>{{ user.userDTO.firstName }}</td>
+                    <td>{{ user.userDTO.lastName }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" *ngIf="!user.userDTO.activated">Дезактивирован</button>
+                        <button class="btn btn-success btn-sm" (click)="setActive(user, false)" *ngIf="user.userDTO.activated"
+                                [disabled]="!currentAccount || currentAccount.login === user.userDTO.login">Активирован</button>
+                    </td>
+                    <td>
+                        <div *ngFor="let authority of user.userDTO.authorities">
+                            <span class="badge badge-info">{{ getAuthorityTest(authority) }}</span>
+                        </div>
+                    </td>
+                    <td>{{ user.userDTO.lastModifiedBy }}</td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['./', user.userDTO.login, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline">Просмотр</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['./', user.userDTO.login, 'edit']"
+                                    queryParamsHandling="merge"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline">Редактировать</span>
+                            </button>
+
+                            <button type="button" (click)="deleteUser(user)"
+                                    class="btn btn-danger btn-sm" [disabled]="!currentAccount || currentAccount.login === user.userDTO.login">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline">Удалить</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="users">
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)">
+                <ng-template ngbPaginationFirst>《</ng-template>
+                <ng-template ngbPaginationLast>》</ng-template>
+                <ng-template ngbPaginationPrevious>〈</ng-template>
+                <ng-template ngbPaginationNext>〉</ng-template>
+                <ng-template ngbPaginationEllipsis>...</ng-template>
+                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+            </ngb-pagination>
+        </div>
+    </div>
+</div>
