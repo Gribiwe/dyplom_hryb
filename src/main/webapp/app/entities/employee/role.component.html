@@ -1,0 +1,127 @@
+<div>
+    <h2 id="page-heading">
+        <span>Ролі</span>
+    </h2>
+
+    <div *jhiHasAnyAuthority="['ROLE_ADMIN']">
+        <span>Оберіть компанію ролі якої Ви бажаєте переглянути</span>
+        <select class="form-select" (change)="companyChanged()" [(ngModel)]="selectedCompany">
+            <option *ngFor="let company of companies" [ngValue]="company">{{company.comapnyName}}</option>
+        </select>
+    </div>
+
+    <button class="button btn btn-primary" style="margin-bottom: 15px" (click)="addNewRole()">
+        Додати нову роль
+    </button>
+
+    <div style="width: 100%; display: flex" *ngIf="roles && roles.length != 0">
+        <div style="border: 1px solid #999999; width: 200px; height: 300px; overflow-y: scroll;overflow-x: hidden;">
+            <div *ngFor="let role of roles; let i = index" (click)="selectRole(role, i)"
+                 style="width: 500px; height: 50px; display: flex">
+                <strong *ngIf="selectedRole === role"
+                        style="margin-top: 15px;margin-left: 15px; margin-bottom: 10px; position: relative;">
+                    {{role.name}} ・
+                </strong>
+
+                <span *ngIf="selectedRole !== role"
+                      style="margin-top: 15px;margin-left: 15px; margin-bottom: 10px; position: relative; color: #6c6c6c; cursor:pointer;">
+                 {{role.name}}
+            </span>
+            </div>
+        </div>
+
+        <div style="padding: 15px; width: calc(100% - 250px);">
+            <h2>Налаштування ролі</h2>
+            <div style="display: flex">
+                <div style="display: flex; flex-direction: column; width: 50%">
+                    <label style="width: 280px" for="name">
+                        Назва
+                    </label>
+                    <input [disabled]="isSaving" style="width: 200px; margin-bottom: 15px" type="text" id="name" [(ngModel)]="selectedRole.name">
+                </div>
+
+                <div style="display: flex; flex-direction: column; width: 50%">
+                    <label style="width: 280px" for="rank">
+                        Рівень (1 - самий низький)
+                    </label>
+                    <input [disabled]="isSaving || isTheHighestRole()" style="width: 200px; margin-bottom: 15px" type="number" id="rank" min="1" max="{{maxRank-1}}" [max]="maxRank-1" [(ngModel)]="selectedRole.rank">
+                </div>
+            </div>
+
+
+
+            <div style="display: flex">
+                <div style="width: 50%">
+                    <div>
+                        <label style="width: 280px" for="canCreateUser">
+                            Створювання нових користувачів
+                        </label>
+                        <input [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canCreateUser" [(ngModel)]="selectedRole.canCreateUser">
+                    </div>
+                    <div>
+                        <label style="width: 280px" for="canUploadFiles">
+                            Завантаження файлів на сервіс
+                        </label>
+                        <input [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canUploadFiles" [(ngModel)]="selectedRole.canUploadFiles">
+                    </div>
+
+                    <div>
+                        <label style="width: 280px" for="canReviewUserList">
+                            Перегляд списку користувачів
+                        </label>
+                        <input [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canReviewUserList" [(ngModel)]="selectedRole.canReviewUserList">
+                    </div>
+                    <div>
+                        <label style="width: 280px" for="canShareFile">
+                            Створення публічного посилання на файл
+                        </label>
+                        <input  [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canShareFile" [(ngModel)]="selectedRole.canShareFile">
+                    </div>
+                </div>
+
+                <div style="width: 50%">
+                    <div>
+                        <label style="width: 280px" for="canSeeNeighbor">
+                            Перегляд файлів на рівні спільної ролі
+                        </label>
+                        <input  [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canSeeNeighbor" [(ngModel)]="selectedRole.canSeeNeighbor">
+                    </div>
+                    <div>
+                        <label style="width: 280px" for="canSeeRemovedFiles">
+                            Видалення файлів
+                        </label>
+                        <input  [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canSeeRemovedFiles" [(ngModel)]="selectedRole.canSeeRemovedFiles">
+                    </div>
+
+                    <div>
+                        <label style="width: 280px" for="canGrantLowerRoles">
+                            Надавання ролей
+                        </label>
+                        <input  [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canGrantLowerRoles" [(ngModel)]="selectedRole.canGrantLowerRoles">
+                    </div>
+                    <div>
+                        <label style="width: 280px" for="canManageFilesOfTheLowerRoles">
+                            Менеджмент файлів інших користувачів
+                        </label>
+                        <input  [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="canManageFilesOfTheLowerRoles"
+                               [(ngModel)]="selectedRole.canManageFilesOfTheLowerRoles">
+                    </div>
+                    <div>
+                        <label style="width: 280px" for="isManager">
+                            Керівник
+                        </label>
+                        <input  [disabled]="isSaving || isTheHighestRole()" type="checkbox" id="isManager"
+                               [(ngModel)]="selectedRole.manager">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="float-right" *ngIf="roles && roles.length > 0">
+        <span class="text-success" style="margin-right: 10px">{{message}}</span>
+        <button [disabled]="isSaving || isTheHighestRole()" class="button btn btn-danger" (click)="remove()">Видалити роль</button>
+        <button [disabled]="isSaving" class="button btn btn-primary" (click)="save()">Зберегти усе</button>
+    </div>
+
+</div>

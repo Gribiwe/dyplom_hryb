@@ -1,20 +1,25 @@
 package com.gribiwe.ua.service.impl;
 
+import com.gribiwe.ua.domain.CustomAuthority;
 import com.gribiwe.ua.domain.User;
 import com.gribiwe.ua.service.EmployeeService;
 import com.gribiwe.ua.domain.Employee;
 import com.gribiwe.ua.repository.EmployeeRepository;
 import com.gribiwe.ua.service.UserService;
+import com.gribiwe.ua.service.dto.CustomAuthorityDTO;
 import com.gribiwe.ua.service.dto.EmployeeDTO;
+import com.gribiwe.ua.service.mapper.CustomAuthorityMapper;
 import com.gribiwe.ua.service.mapper.EmployeeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,6 +37,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
 
+    @Autowired
+    private CustomAuthorityMapper customAuthorityMapper;
+
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper, UserService userService) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
@@ -48,6 +56,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
         log.debug("Request to save Employee : {}", employeeDTO);
         Employee employee = employeeMapper.toEntity(employeeDTO);
+        List<CustomAuthority> customAuthorities = customAuthorityMapper.toEntity(employeeDTO.getCustomAuthorities());
+        employee.setCustomAuthorities(customAuthorities);
         employee = employeeRepository.save(employee);
         return employeeMapper.toDto(employee);
     }
@@ -63,10 +73,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Page<EmployeeDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Employees");
         Page<EmployeeDTO> map = employeeRepository.findAll(pageable)
-            .map(employeeMapper::toDto)
+            .map(this::mapDTO)
             .map(this::getJhiData);
 
         return map;
+    }
+
+    EmployeeDTO mapDTO(Employee employee) {
+        EmployeeDTO employeeDTO = employeeMapper.toDto(employee);
+
+        List<CustomAuthorityDTO> customAuthorityDTOS = customAuthorityMapper.toDto(employee.getCustomAuthorities());
+        employeeDTO.setCustomAuthorities(customAuthorityDTOS);
+
+        return employeeDTO;
     }
 
     /**
@@ -80,7 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<EmployeeDTO> findOne(Long id) {
         log.debug("Request to get Employee : {}", id);
         return employeeRepository.findById(id)
-            .map(employeeMapper::toDto)
+            .map(this::mapDTO)
             .map(this::getJhiData);
     }
 
@@ -122,6 +141,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO findByJhiId(Long userId) {
-        return employeeMapper.toDto(employeeRepository.findByJhiUser(userId));
+        return this.mapDTO(employeeRepository.findByJhiUser(userId));
     }
 }

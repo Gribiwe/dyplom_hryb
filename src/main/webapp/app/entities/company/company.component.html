@@ -1,11 +1,11 @@
 <div>
     <h2 id="page-heading">
-        <span>Компании</span>
+        <span>Компанії</span>
 
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-company" [routerLink]="['/company/new']">
             <fa-icon icon="plus"></fa-icon>
             <span>
-            Создать компанию
+            Створити компанію
             </span>
         </button>
     </h2>
@@ -15,7 +15,7 @@
     <jhi-alert></jhi-alert>
 
     <div class="alert alert-warning" id="no-result" *ngIf="companies?.length === 0">
-        <span>Не найдены компании</span>
+        <span>Компанії не знайдено</span>
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="companies?.length > 0">
@@ -23,8 +23,7 @@
             <thead>
                 <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="reset.bind(this)">
                     <th scope="col"  jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col"  jhiSortBy="comapnyName"><span>Название</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col"  jhiSortBy="baseDepartmentId"><span>Главный филиал</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="comapnyName"><span>Назва</span> <fa-icon icon="sort"></fa-icon></th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -32,31 +31,27 @@
                 <tr *ngFor="let company of companies ;trackBy: trackId">
                     <td><a [routerLink]="['/company', company.id, 'view']">{{ company.id }}</a></td>
                     <td>{{ company.comapnyName }}</td>
-                    <td>
-                        <div *ngIf="company.baseDepartmentId">
-                            <a [routerLink]="['/department', company.baseDepartmentId , 'view']" >{{ company.baseDepartmentId }}</a>
-                        </div>
-                    </td>
+
                     <td class="text-right">
                         <div class="btn-group">
                             <button type="submit"
                                     [routerLink]="['/company', company.id, 'view']"
                                     class="btn btn-info btn-sm">
                                 <fa-icon icon="eye"></fa-icon>
-                                <span class="d-none d-md-inline">Просмотр</span>
+                                <span class="d-none d-md-inline">Перегляд</span>
                             </button>
 
                             <button type="submit"
                                     [routerLink]="['/company', company.id, 'edit']"
                                     class="btn btn-primary btn-sm">
                                 <fa-icon icon="pencil-alt"></fa-icon>
-                                <span class="d-none d-md-inline">Редактировать</span>
+                                <span class="d-none d-md-inline">Редагувати</span>
                             </button>
 
                             <button type="submit" (click)="delete(company)"
                                     class="btn btn-danger btn-sm">
                                 <fa-icon icon="times"></fa-icon>
-                                <span class="d-none d-md-inline">Удалить</span>
+                                <span class="d-none d-md-inline">Видалити</span>
                             </button>
                         </div>
                     </td>

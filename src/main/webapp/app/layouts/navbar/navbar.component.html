@@ -11,7 +11,7 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="home"></fa-icon>
-                        <span>Главная</span>
+                        <span>Головна</span>
                     </span>
                 </a>
             </li>
@@ -19,7 +19,7 @@
                 <a class="nav-link" routerLink="document" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="file"></fa-icon>
-                        <span>Документы</span>
+                        <span>Дукументи</span>
                     </span>
                 </a>
             </li>
@@ -31,11 +31,19 @@
 <!--                    </span>-->
 <!--                </a>-->
 <!--            </li>-->
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" *jhiHasAnyAuthority="['ROLE_COMPANYMANAGER', 'ROLE_ADMIN']" >
-                <a class="nav-link" routerLink="department" (click)="collapseNavbar()" *ngSwitchCase="true">
+            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" *jhiHasAccess="'canReviewUserList'" >
+                <a class="nav-link" routerLink="employee" (click)="collapseNavbar()" *ngSwitchCase="true">
                     <span>
                         <fa-icon icon="building"></fa-icon>
-                        <span>Филлиалы</span>
+                        <span>Користувачі </span>
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" *jhiHasAccess="'manager'">
+                <a class="nav-link" routerLink="employee/roles" (click)="collapseNavbar()" *ngSwitchCase="true">
+                    <span>
+                        <fa-icon icon="building"></fa-icon>
+                        <span>Ролі </span>
                     </span>
                 </a>
             </li>
@@ -43,7 +51,7 @@
                 <a class="nav-link" routerLink="company" (click)="collapseNavbar()" *ngSwitchCase="true">
                     <span>
                         <fa-icon icon="city"></fa-icon>
-                        <span>Компании</span>
+                        <span>Компанії</span>
                     </span>
                 </a>
             </li>
@@ -52,7 +60,7 @@
                 <a class="nav-link" routerLink="admin/user-management" (click)="collapseNavbar()" *ngSwitchCase="true">
                     <span>
                         <fa-icon icon="user"></fa-icon>
-                        <span>Управление аккаунтами</span>
+                        <span>Менеджмент</span>
                     </span>
                 </a>
             </li>
@@ -84,13 +92,13 @@
                     <li *ngSwitchCase="true">
                         <a class="dropdown-item" (click)="logout()" id="logout">
                             <fa-icon icon="sign-out-alt" fixedWidth="true"></fa-icon>
-                            <span>Выход</span>
+                            <span>Вихід</span>
                         </a>
                     </li>
                     <li *ngSwitchCase="false">
                         <a class="dropdown-item" (click)="login()" id="login">
                             <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
-                            <span>Вход</span>
+                            <span>Вхід</span>
                         </a>
                     </li>
                 </ul>

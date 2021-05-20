@@ -1,11 +1,11 @@
-<div>
+<!--<div>-->
     <h2 id="page-heading">
-        <span>Документы</span>
+        <span>Документи</span>
 
-        <button *jhiHasAnyAuthority="'ROLE_CANUPLOAD'" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-document" [routerLink]="['/document/new']">
+        <button *jhiHasAccess="'canUploadFiles'" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-document" [routerLink]="['/document/new']">
             <fa-icon icon="plus"></fa-icon>
             <span>
-            Сохранить новый документ
+            Створити новий документ
             </span>
         </button>
     </h2>
@@ -15,47 +15,45 @@
     <jhi-alert></jhi-alert>
 
     <div class="alert alert-warning" id="no-result" *ngIf="documents?.length === 0">
-        <span>Не найдено документов</span>
+        <span>Не знайдено документів</span>
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="documents?.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
                 <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-                    <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col" jhiSortBy="documentName"><span>Название</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col" jhiSortBy="startDate"><span>Дата сохранения</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col" jhiSortBy="documentName"><span>Назва</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col" jhiSortBy="startDate"><span>Дата створення</span> <fa-icon icon="sort"></fa-icon></th>
                     <th scope="col" jhiSortBy="author"><span>Автор</span> <fa-icon icon="sort"></fa-icon></th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let document of documents ;trackBy: trackId">
-                    <td><a [routerLink]="['/document', document.id, 'view']">{{ document.id }}</a></td>
                     <td>{{ document.documentName }}</td>
                     <td>{{ document.startDate | date:'medium' }}</td>
                     <td>
                         <div *ngIf="document.author">
-                            <a [routerLink]="['/employee', document.author , 'view']" >{{ document.author }}</a>
+                            <a [routerLink]="['/employee', getEmployeeIdByUSerId(document.author) , 'view']" >{{ getUserNameById(document.author) }}</a>
                         </div>
                     </td>
                     <td class="text-right">
                         <div class="btn-group">
-                            <a *jhiHasAnyAuthority="'ROLE_CANDOWNLOAD'" href="api/documents/download/{{document.fileName}}" download
+                            <a href="api/documents/download/{{document.fileName}}" download
                                     class="btn btn-info btn-sm">
                                 <fa-icon icon="download"></fa-icon>
-                                <span class="d-none d-md-inline">Скачать</span>
+                                <span class="d-none d-md-inline">Завантажити</span>
                             </a>
                             <button type="submit"
                                     [routerLink]="['/document', document.id, 'edit']"
                                     class="btn btn-primary btn-sm">
                                 <fa-icon icon="pencil-alt"></fa-icon>
-                                <span class="d-none d-md-inline">Редактировать</span>
+                                <span class="d-none d-md-inline">Редагувати</span>
                             </button>
                             <button type="submit" (click)="delete(document)"
                                     class="btn btn-danger btn-sm">
                                 <fa-icon icon="times"></fa-icon>
-                                <span class="d-none d-md-inline">Удалить</span>
+                                <span class="d-none d-md-inline">Видалити</span>
                             </button>
                         </div>
                     </td>

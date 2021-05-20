@@ -36,10 +36,11 @@ spring:
     serialization:
       indent-output: true
   datasource:
+    sql-script-encoding: UTF-8
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/gpaper
-    username: gpaper
-    password: gpaper
+    url: jdbc:postgresql://ec2-54-75-225-52.eu-west-1.compute.amazonaws.com:5432/dcfgefpen6svjc
+    username: zonoixsggyclzb
+    password: 37578505461eb6e9a939b1920e3507956af897b1d70019e0356c869f246cc0cc
     hikari:
       poolName: Hikari
       auto-commit: false

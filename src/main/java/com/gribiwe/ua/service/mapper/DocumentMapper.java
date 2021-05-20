@@ -9,7 +9,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Document} and its DTO {@link DocumentDTO}.
  */
-@Mapper(componentModel = "spring", uses = {DepartmentMapper.class})
+@Mapper(componentModel = "spring")
 public interface DocumentMapper extends EntityMapper<DocumentDTO, Document> {
 
     DocumentDTO toDto(Document document);

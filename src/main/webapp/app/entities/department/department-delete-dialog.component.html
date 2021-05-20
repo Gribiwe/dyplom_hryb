@@ -1,6 +1,6 @@
 <form *ngIf="department" name="deleteForm" (ngSubmit)="confirmDelete(department?.id!)">
     <div class="modal-header">
-        <h4 class="modal-title">Подтвердите удаление</h4>
+        <h4 class="modal-title">Видалення</h4>
 
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="cancel()">&times;</button>
@@ -9,7 +9,7 @@
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
 
-        <p id="jhi-delete-department-heading">Вы уверены, что хотите удалить этот филиал?</p>
+        <p id="jhi-delete-department-heading">Ви впевнені, що бажаєтеВидалити этот филиал?</p>
     </div>
 
     <div class="modal-footer">
@@ -18,7 +18,7 @@
         </button>
 
         <button id="jhi-confirm-delete-department" type="submit" class="btn btn-danger">
-            <fa-icon icon="times"></fa-icon>&nbsp;<span>Удалить</span>
+            <fa-icon icon="times"></fa-icon>&nbsp;<span>Видалити</span>
         </button>
     </div>
 </form>

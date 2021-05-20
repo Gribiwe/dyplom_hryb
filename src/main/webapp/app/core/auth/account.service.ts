@@ -1,20 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
 import { StateStorageService } from 'app/core/auth/state-storage.service';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { Account } from 'app/core/user/account.model';
+import {Employee, IEmployee} from "app/shared/model/employee.model";
+import {EmployeeService} from "app/entities/employee/employee.service";
+import {CustomAuthority, ICustomAuthority} from "app/shared/model/custom-authority.model";
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private userIdentity: Account | null = null;
+  private employeeData: Employee | null = null;
   private authenticationState = new ReplaySubject<Account | null>(1);
   private accountCache$?: Observable<Account | null>;
 
-  constructor(private http: HttpClient, private stateStorageService: StateStorageService, private router: Router) {}
+  constructor(
+      private http: HttpClient,
+      private stateStorageService: StateStorageService,
+      private employeeService: EmployeeService,
+      private router: Router
+  ) {}
 
   save(account: Account): Observable<{}> {
     return this.http.post(SERVER_API_URL + 'api/account', account);
@@ -22,7 +31,11 @@ export class AccountService {
 
   authenticate(identity: Account | null): void {
     this.userIdentity = identity;
-    this.authenticationState.next(this.userIdentity);
+
+    this.employeeService.findByLogin(this.userIdentity.login).subscribe((res: HttpResponse<IEmployee>) => {
+      this.employeeData = res.body
+      this.authenticationState.next(this.userIdentity);
+    });
   }
 
   hasAnyAuthority(authorities: string[] | string): boolean {
@@ -32,7 +45,18 @@ export class AccountService {
     if (!Array.isArray(authorities)) {
       authorities = [authorities];
     }
+
     return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
+  }
+
+  canAccess(actionCode: string): boolean {
+    if (this.hasAnyAuthority("ROLE_ADMIN")) return true;
+
+    if (!this.employeeData || !this.employeeData.customAuthorities) {
+      return false;
+    }
+
+    return this.employeeData.customAuthorities.some((authority: ICustomAuthority) => authority[actionCode]);
   }
 
   identity(force?: boolean): Observable<Account | null> {

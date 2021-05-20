@@ -11,6 +11,7 @@ import { EmployeeService } from './employee.service';
 import { EmployeeComponent } from './employee.component';
 import { EmployeeDetailComponent } from './employee-detail.component';
 import { EmployeeUpdateComponent } from './employee-update.component';
+import {RoleComponent} from "app/entities/employee/role.component";
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeResolve implements Resolve<IEmployee> {
@@ -77,6 +78,15 @@ export const employeeRoute: Routes = [
     data: {
       authorities: [Authority.USER],
       pageTitle: 'Employees'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'roles',
+    component: RoleComponent,
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'Roles'
     },
     canActivate: [UserRouteAccessService]
   }

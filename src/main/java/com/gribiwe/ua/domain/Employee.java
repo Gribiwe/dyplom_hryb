@@ -1,11 +1,13 @@
 package com.gribiwe.ua.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.*;
 import java.time.Instant;
 
 /**
@@ -34,13 +36,19 @@ public class Employee implements Serializable {
     @Column(name = "jhiUser")
     private Long jhiUser;
 
-    @ManyToOne
-    @JsonIgnoreProperties("employees")
-    private Employee manager;
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "jhi_user_custom_authority",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "custom_authority_id", referencedColumnName = "id")})
+
+    @BatchSize(size = 20)
+    protected List<CustomAuthority> customAuthorities = new ArrayList<>();
 
     @ManyToOne
     @JsonIgnoreProperties("employees")
-    private Department department;
+    private Company company;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -66,6 +74,18 @@ public class Employee implements Serializable {
     public Employee phoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
+    }
+
+    public List<CustomAuthority> getCustomAuthorities() {
+        return customAuthorities;
+    }
+
+    public void setCustomAuthorities(List<CustomAuthority> customAuthorities) {
+        this.customAuthorities = customAuthorities;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -98,30 +118,17 @@ public class Employee implements Serializable {
         this.salary = salary;
     }
 
-    public Employee getManager() {
-        return manager;
+    public Company getCompany() {
+        return company;
     }
 
-    public Employee manager(Employee employee) {
-        this.manager = employee;
+    public Employee department(Company department) {
+        this.company = department;
         return this;
     }
 
-    public void setManager(Employee employee) {
-        this.manager = employee;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public Employee department(Department department) {
-        this.department = department;
-        return this;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartment(Company department) {
+        this.company = department;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

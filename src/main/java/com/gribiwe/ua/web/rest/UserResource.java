@@ -124,7 +124,7 @@ public class UserResource {
             employeeService.save(employeeDTO);
 
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
+                .headers(HeaderUtil.createAlert(applicationName,  "Создан новый пользователь с номером " + newUser.getLogin(), newUser.getLogin()))
                 .body(newUser);
         }
     }
@@ -156,7 +156,7 @@ public class UserResource {
         employeeService.save(fullUserDto.getEmployeeDTO());
 
         return ResponseUtil.wrapOrNotFound(updatedUser,
-            HeaderUtil.createAlert(applicationName, "A user is updated with identifier " + userDTO.getLogin(), userDTO.getLogin()));
+            HeaderUtil.createAlert(applicationName, "Редактирован пользователь с номером " + userDTO.getLogin(), userDTO.getLogin()));
     }
 
     /**
@@ -209,6 +209,6 @@ public class UserResource {
 
             fullUserService.delete(user.getId());
         }
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user is deleted with identifier " + login, login)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "Удалён пользователь с номером " + login, login)).build();
     }
 }

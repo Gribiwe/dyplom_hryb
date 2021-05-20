@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared/util/request-util';
 import { IEmployee } from 'app/shared/model/employee.model';
+import {log} from "util";
 
 type EntityResponseType = HttpResponse<IEmployee>;
 type EntityArrayResponseType = HttpResponse<IEmployee[]>;
@@ -35,6 +36,18 @@ export class EmployeeService {
     return this.http
       .get<IEmployee>(`${this.resourceUrl}/${id}`, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  addRole(employeeId: number, customAuthorityId: number): Observable<EntityResponseType> {
+    return this.http
+        .post<IEmployee>(this.resourceUrl+`/${employeeId}/add-role`, customAuthorityId, { observe: 'response' })
+        .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  findByLogin(login: string): Observable<EntityResponseType> {
+    return this.http
+        .get<IEmployee>(`${this.resourceUrl}/by-login/${login}`, { observe: 'response' })
+        .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {

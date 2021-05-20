@@ -23,17 +23,25 @@ public class Company implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "street_address")
+    private String streetAddress;
+
+    @Column(name = "postal_code")
+    private String postalCode;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "state_province")
+    private String stateProvince;
+
+    @OneToMany(mappedBy = "company")
+    private Set<Employee> employees = new HashSet<>();
+
     @NotNull
     @Column(name = "comapny_name", nullable = false)
     private String comapnyName;
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Department baseDepartment;
-
-    @OneToMany(mappedBy = "company")
-    private Set<Department> departments = new HashSet<>();
-
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -56,44 +64,45 @@ public class Company implements Serializable {
         this.comapnyName = comapnyName;
     }
 
-    public Department getBaseDepartment() {
-        return baseDepartment;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public Company baseDepartment(Department department) {
-        this.baseDepartment = department;
-        return this;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
     }
 
-    public void setBaseDepartment(Department department) {
-        this.baseDepartment = department;
+    public String getPostalCode() {
+        return postalCode;
     }
 
-    public Set<Department> getDepartments() {
-        return departments;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
-    public Company departments(Set<Department> departments) {
-        this.departments = departments;
-        return this;
+    public String getCity() {
+        return city;
     }
 
-    public Company addDepartments(Department department) {
-        this.departments.add(department);
-        department.setCompany(this);
-        return this;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public Company removeDepartments(Department department) {
-        this.departments.remove(department);
-        department.setCompany(null);
-        return this;
+    public String getStateProvince() {
+        return stateProvince;
     }
 
-    public void setDepartments(Set<Department> departments) {
-        this.departments = departments;
+    public void setStateProvince(String stateProvince) {
+        this.stateProvince = stateProvince;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
+    }
 
     @Override
     public boolean equals(Object o) {

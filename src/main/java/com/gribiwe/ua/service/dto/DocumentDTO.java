@@ -18,8 +18,6 @@ public class DocumentDTO implements Serializable {
 
     private Instant endDate;
 
-
-
     private Long author;
 
     public Long getId() {

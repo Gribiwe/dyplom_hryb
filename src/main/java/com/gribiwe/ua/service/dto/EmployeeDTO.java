@@ -1,9 +1,12 @@
 package com.gribiwe.ua.service.dto;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.time.Instant;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,10 +30,33 @@ public class EmployeeDTO implements Serializable {
 
     private Long salary;
 
+    private Long companyId;
 
-    private Long managerId;
+    private List<CustomAuthorityDTO> customAuthorities;
 
-    private Long departmentId;
+    public EmployeeDTO() {
+    }
+
+    public EmployeeDTO(Long id, Long jhiUser, String firstName, String lastName, String email, String phoneNumber, Instant hireDate, Long salary, Long companyId, List<CustomAuthorityDTO> customAuthorities) {
+        this.id = id;
+        this.jhiUser = jhiUser;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.hireDate = hireDate;
+        this.salary = salary;
+        this.companyId = companyId;
+        this.customAuthorities = customAuthorities;
+    }
+
+    public List<CustomAuthorityDTO> getCustomAuthorities() {
+        return customAuthorities;
+    }
+
+    public void setCustomAuthorities(List<CustomAuthorityDTO> customAuthorities) {
+        this.customAuthorities = customAuthorities;
+    }
 
     public Long getId() {
         return id;
@@ -96,20 +122,12 @@ public class EmployeeDTO implements Serializable {
         this.salary = salary;
     }
 
-    public Long getManagerId() {
-        return managerId;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setManagerId(Long employeeId) {
-        this.managerId = employeeId;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
+    public void setCompanyId(Long departmentId) {
+        this.companyId = departmentId;
     }
 
     @Override
@@ -143,8 +161,7 @@ public class EmployeeDTO implements Serializable {
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", hireDate='" + getHireDate() + "'" +
             ", salary=" + getSalary() +
-            ", managerId=" + getManagerId() +
-            ", departmentId=" + getDepartmentId() +
+            ", departmentId=" + getCompanyId() +
             "}";
     }
 }

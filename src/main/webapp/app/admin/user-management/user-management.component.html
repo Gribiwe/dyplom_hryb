@@ -2,7 +2,7 @@
     <h2>
         <span id="user-management-page-heading">Пользователи</span>
 
-        <button class="btn btn-primary float-right jh-create-entity" [routerLink]="['./new']">
+        <button class="btn btn-primary float-right jh-create-entity" [routerLink]="['/employee', 'new']">
             <fa-icon icon="plus"></fa-icon> <span>Создать пользователя</span>
         </button>
     </h2>
@@ -45,24 +45,24 @@
                     <td class="text-right">
                         <div class="btn-group">
                             <button type="submit"
-                                    [routerLink]="['./', user.userDTO.login, 'view']"
+                                    [routerLink]="['/employee', user.employeeDTO.id, 'view']"
                                     class="btn btn-info btn-sm">
                                 <fa-icon icon="eye"></fa-icon>
-                                <span class="d-none d-md-inline">Просмотр</span>
+                                <span class="d-none d-md-inline">Перегляд</span>
                             </button>
 
                             <button type="submit"
-                                    [routerLink]="['./', user.userDTO.login, 'edit']"
+                                    [routerLink]="['/employee', user.employeeDTO.id, 'edit']"
                                     queryParamsHandling="merge"
                                     class="btn btn-primary btn-sm">
                                 <fa-icon icon="pencil-alt"></fa-icon>
-                                <span class="d-none d-md-inline">Редактировать</span>
+                                <span class="d-none d-md-inline">Редагувати</span>
                             </button>
 
                             <button type="button" (click)="deleteUser(user)"
                                     class="btn btn-danger btn-sm" [disabled]="!currentAccount || currentAccount.login === user.userDTO.login">
                                 <fa-icon icon="times"></fa-icon>
-                                <span class="d-none d-md-inline">Удалить</span>
+                                <span class="d-none d-md-inline">Видалити</span>
                             </button>
                         </div>
                     </td>

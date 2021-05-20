@@ -1,66 +1,67 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-employee-heading">Create or edit a Employee</h2>
 
             <div>
                 <jhi-alert-error></jhi-alert-error>
 
-                <div class="form-group" [hidden]="!editForm.get('id')!.value">
-                    <label for="id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
-                </div>
-
                 <div class="form-group">
                     <label class="form-control-label" for="field_firstName" ngbTooltip="The firstname attribute.">First Name</label>
-                    <input type="text" class="form-control" name="firstName" id="field_firstName"
-                           formControlName="firstName"/>
+                    <input type="text" [(ngModel)]="employee.firstName" class="form-control" name="firstName" id="field_firstName"
+                           />
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_lastName">Last Name</label>
-                    <input type="text" class="form-control" name="lastName" id="field_lastName"
-                           formControlName="lastName"/>
+                    <input type="text" [(ngModel)]="employee.lastName" class="form-control" name="lastName" id="field_lastName"
+                           />
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_email">Email</label>
-                    <input type="text" class="form-control" name="email" id="field_email"
-                           formControlName="email"/>
+                    <input type="text" [(ngModel)]="employee.email" class="form-control" name="email" id="field_email"
+                           />
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_phoneNumber">Phone Number</label>
-                    <input type="text" class="form-control" name="phoneNumber" id="field_phoneNumber"
-                           formControlName="phoneNumber"/>
+                    <input type="text" [(ngModel)]="employee.phoneNumber" class="form-control" name="phoneNumber" id="field_phoneNumber"
+                           name="phoneNumber"/>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_hireDate">Hire Date</label>
                     <div class="d-flex">
-                        <input id="field_hireDate" type="datetime-local" class="form-control" name="hireDate" formControlName="hireDate" placeholder="YYYY-MM-DD HH:mm"/>
+                        <input id="field_hireDate" [(ngModel)]="employee.hireDate" type="datetime-local" class="form-control" name="hireDate" name="hireDate" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_salary">Salary</label>
-                    <input type="number" class="form-control" name="salary" id="field_salary"
-                           formControlName="salary"/>
+                    <input type="number" [(ngModel)]="employee.salary" class="form-control" name="salary" id="field_salary"
+                           name="salary"/>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_manager">Manager</label>
-                    <select class="form-control" id="field_manager" name="manager" formControlName="managerId">
+                <div class="form-group" *jhiHasAnyAuthority="['ROLE_ADMIN']">
+                    <label class="form-control-label" for="field_company">company</label>
+                    <select class="form-control" [(ngModel)]="employee.companyId" id="field_company" name="company" (change)="onCompanySelected()" name="companyId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="employeeOption.id" *ngFor="let employeeOption of employees; trackBy: trackById">{{ employeeOption.id }}</option>
+                        <option [ngValue]="companyOption.id" *ngFor="let companyOption of companys; trackBy: trackById">{{ companyOption.comapnyName }}</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_department">Department</label>
-                    <select class="form-control" id="field_department" name="department" formControlName="departmentId">
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="departmentOption.id" *ngFor="let departmentOption of departments; trackBy: trackById">{{ departmentOption.id }}</option>
+                    <label>Ролі</label>
+                    <label><small>Збережені:
+                        <span *ngFor="let role of employee.customAuthorities; let ind = index">
+                            {{role.name}}
+                            <span *ngIf="ind !== employee.customAuthorities.length-1">
+                                ,
+                            </span>
+                        </span>
+                    </small></label>
+                    <select class="form-control" [(ngModel)]="employee.customAuthorities" multiple name="customAuthorities" name="customAuthorities">
+                        <option *ngFor="let role of roles" [value]="role">{{ role.name }}</option>
                     </select>
                 </div>
             </div>
@@ -70,10 +71,9 @@
                     <fa-icon icon="ban"></fa-icon>&nbsp;<span>Отмена</span>
                 </button>
 
-                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon icon="save"></fa-icon>&nbsp;<span>Сохранить</span>
+                <button type="submit" id="save-entity" [disabled]="isSaving" (click)="save()" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span>Зберегти</span>
                 </button>
             </div>
-        </form>
     </div>
 </div>

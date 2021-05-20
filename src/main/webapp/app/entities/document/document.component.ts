@@ -10,6 +10,11 @@ import { IDocument } from 'app/shared/model/document.model';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { DocumentService } from './document.service';
 import { DocumentDeleteDialogComponent } from './document-delete-dialog.component';
+import {User} from "app/core/user/user.model";
+import {UserService} from "app/core/user/user.service";
+import {EmployeeService} from "app/entities/employee/employee.service";
+import {Employee, IEmployee} from "app/shared/model/employee.model";
+import {AccountService} from "app/core/auth/account.service";
 
 @Component({
   selector: 'jhi-document',
@@ -24,12 +29,18 @@ export class DocumentComponent implements OnInit, OnDestroy {
   predicate!: string;
   ascending!: boolean;
   ngbPaginationPage = 1;
+  users = [];
+  employee: IEmployee[] = [];
+  userEmployee: IEmployee;
 
   constructor(
     protected documentService: DocumentService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected eventManager: JhiEventManager,
+    protected userService: UserService,
+    protected accountService: AccountService,
+    protected employeeService: EmployeeService,
     protected modalService: NgbModal
   ) {}
 
@@ -37,26 +48,68 @@ export class DocumentComponent implements OnInit, OnDestroy {
     const pageToLoad: number = page || this.page;
 
     this.documentService
-      .query({
-        page: pageToLoad - 1,
-        size: this.itemsPerPage,
-        sort: this.sort()
-      })
+      .query()
       .subscribe(
         (res: HttpResponse<IDocument[]>) => this.onSuccess(res.body, res.headers, pageToLoad),
         () => this.onError()
       );
   }
 
+  getEmployeeIdByUSerId(userId: number): number {
+    let result = null;
+
+    this.employee.forEach(employee => {
+      if (employee.jhiUser === userId) {
+        result = employee.id;
+      }
+    })
+
+    return result;
+  }
+
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(data => {
-      this.page = data.pagingParams.page;
-      this.ascending = data.pagingParams.ascending;
-      this.predicate = data.pagingParams.predicate;
-      this.ngbPaginationPage = data.pagingParams.page;
-      this.loadPage();
-    });
-    this.registerChangeInDocuments();
+
+    this.accountService.identity().subscribe(account => {
+      this.employeeService.findByLogin(account.login).subscribe((emplo => {
+
+        this.userEmployee = emplo.body;
+
+        this.activatedRoute.data.subscribe(data => {
+          this.page = data.pagingParams.page;
+          this.ascending = data.pagingParams.ascending;
+          this.predicate = data.pagingParams.predicate;
+          this.ngbPaginationPage = data.pagingParams.page;
+          this.loadPage();
+        });
+        this.registerChangeInDocuments();
+
+        this.userService
+            .query()
+            .subscribe((res: HttpResponse<User[]>) => {
+              this.users = res.body;
+            });
+
+        this.employeeService
+            .query()
+            .subscribe((res: HttpResponse<Employee[]>) => {
+              this.employee = res.body;
+            });
+      }))
+    })
+
+
+  }
+
+  getUserNameById(id: number) {
+    let result = "";
+    this.users.forEach((user => {
+      if (user.userDTO.id === id) {
+        user = user.employeeDTO
+        result = user.firstName + " " + user.lastName;
+      }
+    }))
+
+    return result;
   }
 
   ngOnDestroy(): void {
@@ -97,7 +150,51 @@ export class DocumentComponent implements OnInit, OnDestroy {
         sort: this.predicate + ',' + (this.ascending ? 'asc' : 'desc')
       }
     });
-    this.documents = data || [];
+
+    this.employeeService.query().subscribe(empRes => {
+
+
+      this.documents = (data || []).filter(doc => {
+        let result = false;
+        empRes.body.forEach(emp => {
+          if (doc.author === emp.jhiUser
+              && emp.companyId === this.userEmployee.companyId
+          && (this.getMaxRank(emp) < this.getMaxRank(this.userEmployee) ||
+                  (this.getMaxRank(emp) <= this.getMaxRank(this.userEmployee) &&
+                      this.containsPermission("canSeeNeighbor", this.userEmployee)))) {
+            result = true;
+          } else if (doc.author === this.userEmployee.jhiUser) {
+            result = true
+          }
+        })
+
+        return result;
+      });
+
+    })
+
+
+  }
+
+  containsPermission(permission: string, emp: IEmployee): boolean {
+    let result = false;
+    emp.customAuthorities.forEach(aut => {
+      if (aut[permission]) {
+        result = true;
+      }
+    })
+
+    return result;
+  }
+
+  getMaxRank(employee: IEmployee): number {
+    let result = 0;
+
+    employee.customAuthorities.forEach(aut => {
+      if (aut.rank > result) result = aut.rank;
+    })
+
+    return result
   }
 
   protected onError(): void {

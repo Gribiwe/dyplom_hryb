@@ -9,6 +9,7 @@ import { IEmployee } from 'app/shared/model/employee.model';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { EmployeeService } from './employee.service';
 import { EmployeeDeleteDialogComponent } from './employee-delete-dialog.component';
+import {AccountService} from "app/core/auth/account.service";
 
 @Component({
   selector: 'jhi-employee',
@@ -22,11 +23,13 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   page: number;
   predicate: string;
   ascending: boolean;
+  employee: IEmployee;
 
   constructor(
-    protected employeeService: EmployeeService,
     protected eventManager: JhiEventManager,
     protected modalService: NgbModal,
+    private accountService: AccountService,
+    private employeeService: EmployeeService,
     protected parseLinks: JhiParseLinks
   ) {
     this.employees = [];
@@ -41,12 +44,23 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
   loadAll(): void {
     this.employeeService
-      .query({
-        page: this.page,
-        size: this.itemsPerPage,
-        sort: this.sort()
-      })
-      .subscribe((res: HttpResponse<IEmployee[]>) => this.paginateEmployees(res.body, res.headers));
+      .query()
+      .subscribe((res: HttpResponse<IEmployee[]>) => {
+
+
+
+        this.paginateEmployees( res.body.filter(emp => this.employee.companyId === emp.companyId), res.headers)
+      });
+  }
+
+  getMaxRank(employee: IEmployee): number {
+    let result = 0;
+
+    employee.customAuthorities.forEach(aut => {
+      if (aut.rank > result) result = aut.rank;
+    })
+
+    return result
   }
 
   reset(): void {
@@ -61,8 +75,19 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadAll();
-    this.registerChangeInEmployees();
+
+    this.accountService.identity().subscribe((account) => {
+
+      console.log("acc")
+
+      this.employeeService.findByLogin(account.login).subscribe((res: HttpResponse<IEmployee>) => {
+        this.employee = res.body
+
+        this.loadAll();
+        this.registerChangeInEmployees();
+
+      })
+    })
   }
 
   ngOnDestroy(): void {

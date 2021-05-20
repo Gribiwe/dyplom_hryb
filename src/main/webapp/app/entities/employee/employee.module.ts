@@ -7,10 +7,11 @@ import { EmployeeDetailComponent } from './employee-detail.component';
 import { EmployeeUpdateComponent } from './employee-update.component';
 import { EmployeeDeleteDialogComponent } from './employee-delete-dialog.component';
 import { employeeRoute } from './employee.route';
+import {RoleComponent} from "app/entities/employee/role.component";
 
 @NgModule({
   imports: [GpaperSharedModule, RouterModule.forChild(employeeRoute)],
-  declarations: [EmployeeComponent, EmployeeDetailComponent, EmployeeUpdateComponent, EmployeeDeleteDialogComponent],
+  declarations: [EmployeeComponent, EmployeeDetailComponent, EmployeeUpdateComponent, EmployeeDeleteDialogComponent, RoleComponent],
   entryComponents: [EmployeeDeleteDialogComponent]
 })
 export class GpaperEmployeeModule {}

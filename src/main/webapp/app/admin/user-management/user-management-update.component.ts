@@ -40,9 +40,7 @@ export class UserManagementUpdateComponent implements OnInit {
     langKey: [],
     hireDate: [],
     phoneNumber: [],
-    managerId: [],
-    salary: [],
-    departmentId: []
+    salary: []
   });
 
   constructor(  protected employeeService: EmployeeService,
@@ -127,11 +125,7 @@ export class UserManagementUpdateComponent implements OnInit {
       // @ts-ignore
       phoneNumber: user.employeeDTO.phoneNumber,
       // @ts-ignore
-      managerId: user.employeeDTO.managerId,
-      // @ts-ignore
       salary: user.employeeDTO.salary,
-      // @ts-ignore
-      departmentId: user.employeeDTO.departmentId,
     });
   }
 
@@ -161,11 +155,7 @@ export class UserManagementUpdateComponent implements OnInit {
     // @ts-ignore
     user.employeeDTO.phoneNumber = this.editForm.get(['phoneNumber'])!.value;
     // @ts-ignore
-    user.employeeDTO.managerId = this.editForm.get(['managerId'])!.value;
-    // @ts-ignore
     user.employeeDTO.salary = this.editForm.get(['salary'])!.value;
-    // @ts-ignore
-    user.employeeDTO.departmentId = this.editForm.get(['departmentId'])!.value;
   }
 
   private onSaveSuccess(): void {

@@ -14,9 +14,50 @@ public class CompanyDTO implements Serializable {
     @NotNull
     private String comapnyName;
 
+    @NotNull
+    private String streetAddress;
 
-    private Long baseDepartmentId;
-    
+    @NotNull
+    private String postalCode;
+
+    @NotNull
+    private String city;
+
+    @NotNull
+    private String stateProvince;
+
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStateProvince() {
+        return stateProvince;
+    }
+
+    public void setStateProvince(String stateProvince) {
+        this.stateProvince = stateProvince;
+    }
+
     public Long getId() {
         return id;
     }
@@ -31,14 +72,6 @@ public class CompanyDTO implements Serializable {
 
     public void setComapnyName(String comapnyName) {
         this.comapnyName = comapnyName;
-    }
-
-    public Long getBaseDepartmentId() {
-        return baseDepartmentId;
-    }
-
-    public void setBaseDepartmentId(Long departmentId) {
-        this.baseDepartmentId = departmentId;
     }
 
     @Override
@@ -60,14 +93,5 @@ public class CompanyDTO implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "CompanyDTO{" +
-            "id=" + getId() +
-            ", comapnyName='" + getComapnyName() + "'" +
-            ", baseDepartmentId=" + getBaseDepartmentId() +
-            "}";
     }
 }

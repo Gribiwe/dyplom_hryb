@@ -22,12 +22,14 @@ export class CompanyUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     comapnyName: [null, [Validators.required]],
-    baseDepartmentId: []
+    streetAddress: [null, [Validators.required]],
+    postalCode: [null, [Validators.required]],
+    city: [null, [Validators.required]],
+    stateProvince: [null, [Validators.required]]
   });
 
   constructor(
     protected companyService: CompanyService,
-    protected departmentService: DepartmentService,
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder
   ) {}
@@ -35,28 +37,6 @@ export class CompanyUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ company }) => {
       this.updateForm(company);
-
-      this.departmentService
-        .query({ filter: 'company-is-null' })
-        .pipe(
-          map((res: HttpResponse<IDepartment[]>) => {
-            return res.body || [];
-          })
-        )
-        .subscribe((resBody: IDepartment[]) => {
-          if (!company.baseDepartmentId) {
-            this.basedepartments = resBody;
-          } else {
-            this.departmentService
-              .find(company.baseDepartmentId)
-              .pipe(
-                map((subRes: HttpResponse<IDepartment>) => {
-                  return subRes.body ? [subRes.body].concat(resBody) : resBody;
-                })
-              )
-              .subscribe((concatRes: IDepartment[]) => (this.basedepartments = concatRes));
-          }
-        });
     });
   }
 
@@ -64,7 +44,10 @@ export class CompanyUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: company.id,
       comapnyName: company.comapnyName,
-      baseDepartmentId: company.baseDepartmentId
+      streetAddress: company.streetAddress,
+      postalCode: company.postalCode,
+      city: company.city,
+      stateProvince: company.stateProvince
     });
   }
 
@@ -87,7 +70,10 @@ export class CompanyUpdateComponent implements OnInit {
       ...new Company(),
       id: this.editForm.get(['id'])!.value,
       comapnyName: this.editForm.get(['comapnyName'])!.value,
-      baseDepartmentId: this.editForm.get(['baseDepartmentId'])!.value
+      streetAddress: this.editForm.get(['streetAddress'])!.value,
+      postalCode: this.editForm.get(['postalCode'])!.value,
+      city: this.editForm.get(['city'])!.value,
+      stateProvince: this.editForm.get(['stateProvince'])!.value
     };
   }
 

@@ -1,4 +1,5 @@
 import { Moment } from 'moment';
+import {ICustomAuthority} from "app/shared/model/custom-authority.model";
 
 export interface IEmployee {
   id?: number;
@@ -8,9 +9,9 @@ export interface IEmployee {
   phoneNumber?: string;
   hireDate?: Moment;
   salary?: number;
-  managerId?: number;
-  departmentId?: number;
+  companyId?: number;
   jhiUser?: number;
+  customAuthorities?: ICustomAuthority[];
 }
 
 export class Employee implements IEmployee {
@@ -22,8 +23,8 @@ export class Employee implements IEmployee {
     public phoneNumber?: string,
     public hireDate?: Moment,
     public salary?: number,
-    public managerId?: number,
-    public departmentId?: number,
-    public jhiUser?: number
+    public companyId?: number,
+    public jhiUser?: number,
+    public customAuthorities?: ICustomAuthority[]
   ) {}
 }

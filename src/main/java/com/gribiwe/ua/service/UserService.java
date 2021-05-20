@@ -7,12 +7,14 @@ import com.gribiwe.ua.repository.AuthorityRepository;
 import com.gribiwe.ua.repository.UserRepository;
 import com.gribiwe.ua.security.AuthoritiesConstants;
 import com.gribiwe.ua.security.SecurityUtils;
+import com.gribiwe.ua.service.dto.EmployeeDTO;
 import com.gribiwe.ua.service.dto.UserDTO;
 
 import io.github.jhipster.security.RandomUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -38,12 +41,44 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     private final AuthorityRepository authorityRepository;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+    }
+
+    @PostConstruct
+    private void init() {
+        if (!getUserWithAuthoritiesByLogin("admin").isPresent()) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setLogin("admin");
+            userDTO.setActivated(true);
+            User admin = registerUser(userDTO, "admin");
+            activateRegistration(admin.getActivationKey());
+
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setId(admin.getId());
+            employeeDTO.setJhiUser(admin.getId());
+            employeeService.save(employeeDTO);
+
+            Authority adminAuthority = new Authority();
+            adminAuthority.setName("ROLE_ADMIN");
+            authorityRepository.save(adminAuthority);
+
+            Authority userAuthority = new Authority();
+            userAuthority.setName("ROLE_USER");
+            authorityRepository.save(userAuthority);
+
+            Set<Authority> authorities = admin.getAuthorities();
+
+            authorities.add(adminAuthority);
+            authorities.add(userAuthority);
+        }
     }
 
     public Optional<User> activateRegistration(String key) {

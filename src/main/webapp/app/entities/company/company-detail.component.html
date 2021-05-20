@@ -12,12 +12,6 @@
                 <dd>
                     <span>{{ company.comapnyName }}</span>
                 </dd>
-                <dt><span>Base Department</span></dt>
-                <dd>
-                    <div *ngIf="company.baseDepartmentId">
-                        <a [routerLink]="['/department', company.baseDepartmentId, 'view']">{{ company.baseDepartmentId }}</a>
-                    </div>
-                </dd>
             </dl>
 
             <button type="submit"

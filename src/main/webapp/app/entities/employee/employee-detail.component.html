@@ -32,16 +32,10 @@
                 <dd>
                     <span>{{ employee.salary }}</span>
                 </dd>
-                <dt><span>Manager</span></dt>
+                <dt><span>company</span></dt>
                 <dd>
-                    <div *ngIf="employee.managerId">
-                        <a [routerLink]="['/employee', employee.managerId, 'view']">{{ employee.managerId }}</a>
-                    </div>
-                </dd>
-                <dt><span>Department</span></dt>
-                <dd>
-                    <div *ngIf="employee.departmentId">
-                        <a [routerLink]="['/department', employee.departmentId, 'view']">{{ employee.departmentId }}</a>
+                    <div *ngIf="employee.companyId">
+                        <a [routerLink]="['/company', employee.companyId, 'view']">{{ employee.companyId }}</a>
                     </div>
                 </dd>
             </dl>
@@ -52,7 +46,7 @@
                 <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Назад</span>
             </button>
 
-            <button type="button"
+            <button type="button" *jhiHasAccess="'canCreateUser'"
                     [routerLink]="['/employee', employee.id, 'edit']"
                     class="btn btn-primary">
                 <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
